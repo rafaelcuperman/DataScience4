@@ -114,7 +114,7 @@ class Tweets:
     porter = PorterStemmer()
     lanc = LancasterStemmer()
 
-    def __init__(self, lemma = True, stem = None, minOccurrances = 3):
+    def __init__(self, path = "RawData/", lemma = True, stem = None, minOccurrances = 3, tf_idf = False):
         
         print('Preprocessing tweets and extracting features')
         # Define containers
@@ -127,16 +127,16 @@ class Tweets:
 
         # Read csv file in
         try:
-            data = pd.read_csv("RawData/trump.csv", sep = ';',\
+            data = pd.read_csv(path + "trump.csv", sep = ';',\
                 encoding= 'unicode_escape', error_bad_lines = False)
         except:
-            print('Error: Could not open file: RawData/trump.csv\n')
+            print('Error: Could not open file: {}trump.csv\n'.format(path))
             return
 
         # Load stopwords in
-        stopWords   = stopwords.words('english') + open('RawData/rm_words.txt').read().splitlines()
-        tags        = open('RawData/rm_tags.txt').read().splitlines()
-        symbols     = open('RawData/rm_symbols.txt').read().splitlines()
+        stopWords   = stopwords.words('english') + open(path + 'rm_words.txt').read().splitlines()
+        tags        = open(path + 'rm_tags.txt').read().splitlines()
+        symbols     = open(path + 'rm_symbols.txt').read().splitlines()
 
         idx_tweet = 0
         for line, date  in zip(data['text'],data['created_at']):
@@ -231,7 +231,7 @@ class Tweets:
                 except:
                     continue
 
-        self.matrix = createMatrix(self.tweetList,self.wordList)
+        self.matrix = createMatrix(self.tweetList,self.wordList, tf_idf)
 
         print('Done')
         # EO init()
@@ -269,15 +269,29 @@ class Tweets:
                 csv.writer(file).writerow(self.tagList)
 
 
-def createMatrix(tweetList,wordList):
-    matrix = np.zeros((len(tweetList),len(wordList)),\
+def createMatrix(tweetList, wordList, tf_idf = False):
+    matrix = np.zeros((len(wordList),len(tweetList)),\
         dtype = np.uint8, order = 'C')
-
-    for i in range(len(tweetList)):
-        tmp = tweetList[i].split()
-        for j in range(len(wordList)):
-            matrix[i,j] = np.uint8(tmp.count(wordList[j]))
-
+    
+    # Term frequency
+    for j in range(len(tweetList)):
+        tmp = tweetList[j].split()
+        for i in range(len(wordList)):
+            matrix[i,j] = np.uint8(tmp.count(wordList[i]))
+    
+    if tf_idf:
+        # Inverse document frequency
+        numTweets = len(tweetList)
+        idf = []
+        for i in range(len(wordList)):
+            word = wordList[i]
+            count = 0
+            for j in range(len(tweetList)):
+                if word in tweetList[j]:
+                    count += 1
+            idf = np.append(idf,np.log10(numTweets/(1+count)))
+        matrix = matrix * idf[:, np.newaxis]
+    
     return sparse.csr_matrix(matrix)
 
 
