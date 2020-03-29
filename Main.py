@@ -17,6 +17,7 @@ import collections
 import datetime
 from collections import OrderedDict
 import random
+from scipy.sparse.linalg import svds
 
   
 # First run things...
@@ -294,6 +295,15 @@ def createMatrix(tweetList, wordList, tf_idf = False):
     
     return sparse.csr_matrix(matrix)
 
+def LSI(matrix, k=10):
+    # Do SVD with k-rank reduction 
+    try:
+        _, s, vt = svds(matrix, k)
+    except:
+        _, s, vt = svds(matrix.asfptype(), k)
+    
+    # Reconstruct tweets (S*vt)
+    return np.matmul(np.diag(s),vt)
 
 def clusterData(data, alg = 'kmeans', n_clusters = 10, eps = 0.1, min_samples = 4):
     '''Returns the calculated cluster with the attributes:
