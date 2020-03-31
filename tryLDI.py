@@ -12,14 +12,14 @@ recomputeData = False
 lemma = True
 stem = None
 minOccurrances = 3
-tf_idf = False
+tf_idf = True
 path = "RawData/"
 
 ## Rank reductions for LDI
-k_LDI = [5, 10, 50, 100, 200, 500, 1000]
+k_LDI = [5, 10, 50, 100, 500, 1000]
 
 ## Clustering parameter for hierarchical
-n_clusters = 5
+n_clusters = 10
 
 # Plot silhouettes
 plotSilhouettes = True
