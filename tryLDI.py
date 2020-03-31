@@ -28,10 +28,10 @@ plotSilhouettes = False
 plotSilhouettes = False
 
 # Plot word clouds
-plotWordClouds = True
+plotWordClouds = False
 
 # Plot distribution
-plotClusterDist = True
+plotClusterDist = False
 
 
 
