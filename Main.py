@@ -238,35 +238,35 @@ class Tweets:
         # EO init()
 
 
-    def saveData(self, files = 'all'):
+    def saveData(self, path = "RawData/", files = 'all'):
         if files == 'all' or files == 'matrix':
             try:
-                sparse.save_npz('RawData/matrix.npz', self.matrix)
+                sparse.save_npz(path + 'matrix.npz', self.matrix)
 
-                with open('RawData/tweetList.csv','w', newline = '') as file:
+                with open(path + 'tweetList.csv','w', newline = '') as file:
                     csv.writer(file).writerow(self.tweetList)
 
-                with open('RawData/tweetTime.csv','w', newline = '') as file:
+                with open(path +'tweetTime.csv','w', newline = '') as file:
                     csv.writer(file).writerow(self.tweetTime)
                     
-                with open('RawData/tweetIndices.csv','w', newline = '') as file:
+                with open(path +'tweetIndices.csv','w', newline = '') as file:
                     csv.writer(file).writerow(self.tweetIndices)
                     
-                with open('RawData/wordList.csv','w', newline = '') as file:
+                with open(path +'wordList.csv','w', newline = '') as file:
                     csv.writer(file).writerow(self.wordList)
                     
-                with open('RawData/wordFreq.csv','w', newline = '') as file:
+                with open(path +'wordFreq.csv','w', newline = '') as file:
                     csv.writer(file).writerow(self.wordFreq)
 
             except:
                 print('Failed saving the matrix and/or the tweetList.')
 
         if files == 'all' or files == 'wordList':
-            with open('RawData/wordList.csv','w', newline = '') as file:
+            with open(path +'wordList.csv','w', newline = '') as file:
                 csv.writer(file).writerow(self.wordList)
 
         if files == 'all' or files == 'hashTags':
-            with open('RawData/hashTags.csv','w', newline = '') as file:
+            with open(path +'hashTags.csv','w', newline = '') as file:
                 csv.writer(file).writerow(self.tagList)
 
 
