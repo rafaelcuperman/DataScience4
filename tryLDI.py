@@ -22,17 +22,13 @@ k_LDI = [5, 10, 50, 100, 200, 500, 1000]
 n_clusters = 5
 
 # Plot silhouettes
-plotSilhouettes = False
-
-# Plot silhouettes
-plotSilhouettes = False
+plotSilhouettes = True
 
 # Plot word clouds
 plotWordClouds = False
 
 # Plot distribution
-plotClusterDist = False
-
+plotClusterDist = True
 
 
 #-----------------------------#
@@ -86,21 +82,20 @@ print("n_clusters: %d, \t n_samples: %d, \t n_features: %d"
 
 
 # Execute LDI
-model_hierarchical={}
-silhouette_hierarchical={}
-calinsky_hierarchical={}
+model = {}
+silhouette = {}
+calinsky = {}
 for k in k_LDI:
     print("Executing model with LDI with k = {}...\n".format(k))
-    data = LSI(data, k)
-    dataDense = data.toarray()
+    dataLSI = LSI(data, k)
+    dataLSI = np.transpose(dataLSI)
     
     # Execute Hierarchical clustering and compute silhouette metric
     name = 'Hierarchical{}'.format(k)
-    model[k] = clusterData(dataDense, alg = 'hierarchical', n_clusters = n_clusters)
-    calinsky[k] = calinski(model[k], dataDense)
-    silhouette[k] = silhouette_metric(model[k], dataDense,\
+    model[k] = clusterData(dataLSI, alg = 'hierarchical', n_clusters = n_clusters)
+    calinsky[k] = calinski(model[k], dataLSI)
+    silhouette[k] = silhouette_metric(model[k], dataLSI,\
        name_model = name, plotGraph = plotSilhouettes)
-    dataDense = [] 
     print("Done\n")
     
     ## Plot Word Cloud
